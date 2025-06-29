@@ -13,34 +13,42 @@ def enviar_mensaje(numero, texto):
         "Authorization": f"Bearer {ACCESS_TOKEN}",
         "Content-Type": "application/json"
     }
+
     data = {
         "messaging_product": "whatsapp",
         "to": numero,
         "type": "text",
         "text": {"body": texto}
     }
+
     response = requests.post(GRAPH_URL, headers=headers, json=data)
+    print(f"Respuesta de API Meta: {response.status_code} - {response.text}")
     return response.json()
 
 @app.route("/", methods=["GET"])
-def home():
+def inicio_render():
     return "Servidor WhatsApp Bot activo 🚀", 200
 
 @app.route("/webhook", methods=["GET", "POST"])
 def webhook():
     if request.method == "GET":
-        # Verificación de Webhook
-        verify_token = "mi_token_de_verificacion"
+        # Verificación inicial con Meta
+        verify_token = "mi_token_de_verificacion"  # Cambiá por tu token
         mode = request.args.get("hub.mode")
         token = request.args.get("hub.verify_token")
         challenge = request.args.get("hub.challenge")
+
         if mode == "subscribe" and token == verify_token:
+            print("Webhook verificado correctamente")
             return challenge, 200
         else:
+            print("Fallo en verificación de webhook")
             return "Verificación fallida", 403
 
     if request.method == "POST":
         data = request.get_json()
+        print(f"Datos recibidos en webhook: {data}")
+
         if data and "entry" in data:
             for entry in data["entry"]:
                 for change in entry["changes"]:
@@ -50,7 +58,9 @@ def webhook():
                         msg = messages[0]
                         texto = msg["text"]["body"]
                         numero = msg["from"]
+                        print(f"Mensaje recibido de {numero}: {texto}")
 
+                        # Respuesta según el texto
                         if "hola" in texto.lower():
                             respuesta = "¡Hola! ¿En qué puedo ayudarte hoy?"
                         elif "viaje" in texto.lower():
@@ -60,12 +70,12 @@ def webhook():
                         else:
                             respuesta = "No entendí eso. Escribí 'viaje' o 'hola'."
 
-                        enviar_mensaje(numero, respuesta)
+                        resultado = enviar_mensaje(numero, respuesta)
+                        print(f"Respuesta enviada: {respuesta}")
+                        print(f"Resultado API Meta: {resultado}")
 
         return jsonify({"status": "ok"}), 200
-@app.route("/", methods=["GET"])
-def inicio_render():
-    return "Servidor WhatsApp Bot activo 🚀", 200
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
