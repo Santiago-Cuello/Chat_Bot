@@ -64,7 +64,7 @@ def webhook():
 
         return jsonify({"status": "ok"}), 200
 @app.route("/", methods=["GET"])
-def home():
+def inicio_render():
     return "Servidor WhatsApp Bot activo 🚀", 200
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
