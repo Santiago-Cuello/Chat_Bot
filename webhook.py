@@ -5,7 +5,7 @@ from flask import Flask, request, jsonify
 app = Flask(__name__)
 
 PHONE_NUMBER_ID = "621297494409962"
-GRAPH_URL = f"https://graph.facebook.com/v22.0/{PHONE_NUMBER_ID}/messages"
+GRAPH_URL = f"https://graph.facebook.com/v23.0/{PHONE_NUMBER_ID}/messages"
 ACCESS_TOKEN = "EAAKh98ZAwP0wBOZBR6hdCKqCJjyJJaZCHaZB86D1t91oM24C68iENtYheeOdb5MxHkflTphqnG1fQuiYWKmQbp5k4mjZB7hBZBD1nK8Mia2xzk9oGg9MJPSXWaWUuYXd9wu3FSJF4JYLRsD5cChJxZB9IG5ZAd85ZC2UuAC2tUBKhmdgWamdhx4wJQ5KZBw7sX4ee00u6CMLXuLohg1YfiNlEYPZAYaOZCgicZB55Uh1nYkaghNkc9ZAUZD"
 
 def enviar_mensaje(numero, texto):
